@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "USOM Güvenli Web (V3 TS)",
+  "version": "3.0",
+  "description": "USOM API kullanarak zararlı web sitelerini engeller. (TypeScript + Preact Version)",
+  "permissions": [
+    "webNavigation",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://siberguvenlik.gov.tr/*",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "options_page": "src/ui/options/index.html",
+  "action": {
+    "default_popup": "src/ui/popup/index.html"
+  }
+}
