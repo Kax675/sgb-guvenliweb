@@ -1,7 +1,7 @@
 import { SgbSettings, SETTINGS_DEFAULTS, CachedModel } from './types';
 
-const SETTINGS_KEY = 'usom_settings';
-const CACHE_KEY = 'usom_cache';
+const SETTINGS_KEY = 'sgb_settings';
+const CACHE_KEY = 'sgb_cache';
 
 export async function getSettings(): Promise<SgbSettings> {
     const result = await chrome.storage.local.get(SETTINGS_KEY);

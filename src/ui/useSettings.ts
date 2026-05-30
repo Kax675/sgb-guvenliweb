@@ -26,8 +26,8 @@ export function useSettings() {
         refresh();
 
         const listener = (changes: { [key: string]: chrome.storage.StorageChange }, area: string) => {
-            if (area === 'local' && changes.usom_settings && isMounted) {
-                const newValue = changes.usom_settings.newValue;
+            if (area === 'local' && changes.sgb_settings && isMounted) {
+                const newValue = changes.sgb_settings.newValue;
                 if (newValue) {
                     setSettings({ ...SETTINGS_DEFAULTS, ...newValue });
                 }

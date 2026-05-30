@@ -60,8 +60,8 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === "local" && changes['usom_settings']) {
-        const newValue = changes['usom_settings'].newValue;
+    if (area === "local" && changes['sgb_settings']) {
+        const newValue = changes['sgb_settings'].newValue;
         if (newValue && typeof newValue === 'object') {
             currentSettings = { ...SETTINGS_DEFAULTS, ...newValue };
         }
