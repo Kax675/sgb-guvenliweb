@@ -4,11 +4,21 @@ import { Input } from "../components/Input";
 import "../style.css";
 
 function Popup() {
-  const { settings, updateSettings } = useSettings();
+  const { settings, updateSettings, loading } = useSettings();
 
-  const toggle = () =>
-    updateSettings({ protectionEnabled: !settings.protectionEnabled });
+  const toggle = (e: any) => {
+    const val = e.currentTarget.checked;
+    updateSettings({ protectionEnabled: val });
+  };
   const openOptions = () => chrome.runtime.openOptionsPage();
+
+  if (loading) {
+    return (
+      <div className="w-[320px] p-12 flex items-center justify-center bg-white">
+        <div className="w-6 h-6 border-2 border-sky-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-[320px] p-4 font-sans bg-white text-neutral-900">
@@ -33,6 +43,7 @@ function Popup() {
           description={settings.protectionEnabled ? "Web trafiğiniz korunuyor" : "Koruma şu an kapalı"}
           checked={settings.protectionEnabled}
           onChange={toggle}
+          disabled={loading}
         />
       </div>
 

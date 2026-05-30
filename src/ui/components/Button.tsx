@@ -3,6 +3,7 @@ import { JSX } from 'preact';
 interface ButtonProps extends JSX.HTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'danger';
     children: any;
+    disabled?: boolean;
 }
 
 export function Button({ variant = 'primary', children, className = '', ...props }: ButtonProps) {

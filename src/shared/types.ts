@@ -24,7 +24,7 @@ export const SETTINGS_DEFAULTS: UsomSettings = {
     protectionEnabled: true,
     excludedDomains: [],
     minCriticality: 4,
-    cacheDuration: 24,
+    cacheDuration: 48,
     cacheSize: 5000
 };
 

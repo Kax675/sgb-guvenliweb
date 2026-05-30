@@ -1,18 +1,22 @@
 import { JSX } from 'preact';
 
-interface InputProps extends Omit<JSX.HTMLAttributes<HTMLInputElement>, 'label'> {
+interface InputProps extends JSX.HTMLAttributes<HTMLInputElement> {
     label?: string;
     description?: string;
-    checked?: boolean;
     error?: string;
-    type?: 'text' | 'number' | 'range' | 'checkbox' | 'password' | 'email';
+    type?: string;
+    checked?: boolean;
+    min?: string | number;
+    max?: string | number;
+    value?: string | number;
+    placeholder?: string;
+    disabled?: boolean;
 }
 
 export function Input({ 
     label, 
     description, 
     error, 
-    checked,
     type = 'text', 
     className = '', 
     ...props 

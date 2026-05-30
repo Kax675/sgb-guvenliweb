@@ -21,11 +21,25 @@ function Blocked() {
     window.history.length > 1 ? window.history.back() : window.close();
 
   return (
-    <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-6 font-sans text-neutral-900">
-      <div className="max-w-lg w-full bg-white rounded-lg shadow-xl overflow-hidden border border-neutral-200">
+    <div className="min-h-screen bg-white flex items-center justify-center p-6 font-sans text-neutral-900">
+      <div className="max-w-lg w-full overflow-hidden">
         <div className="bg-red-700 px-8 py-6 text-white text-center">
           <div className="w-12 h-12 bg-white/25 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
           </div>
           <h1 className="text-xl font-bold tracking-tight">
             Erişim Engellendi
@@ -34,7 +48,8 @@ function Blocked() {
 
         <div className="p-8">
           <p className="text-neutral-600 mb-8 text-sm leading-relaxed text-center">
-            Bu web sitesi <strong className="text-red-600 font-bold">USOM</strong> tarafından
+            Bu web sitesi{" "}
+            <strong className="text-red-600 font-bold">USOM</strong> tarafından
             güvenlik tehdidi olarak raporlandığı için erişiminiz durduruldu.
           </p>
 
@@ -57,7 +72,7 @@ function Blocked() {
                 </span>
               </div>
             </div>
-            
+
             <div className="pt-4 border-t border-neutral-100">
               <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block mb-1">
                 Hedef Adres
@@ -69,10 +84,10 @@ function Blocked() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Button onClick={goBack} variant="secondary">Geri Dön</Button>
-            <Button
-              onClick={() => setShowDetails(!showDetails)}
-            >
+            <Button onClick={goBack} variant="secondary">
+              Geri Dön
+            </Button>
+            <Button onClick={() => setShowDetails(!showDetails)}>
               Detayları Gör
             </Button>
           </div>
@@ -92,7 +107,8 @@ function Blocked() {
                 <span>{params.date || "Belirtilmemiş"}</span>
               </div>
               <p className="pt-3 border-t border-neutral-200 text-neutral-500 leading-relaxed italic">
-                Bu sayfa, kişisel verilerinizi çalmaya yönelik oltalama veya kötü amaçlı yazılım barındırıyor olabilir.
+                Bu sayfa, kişisel verilerinizi çalmaya yönelik oltalama veya
+                kötü amaçlı yazılım barındırıyor olabilir.
               </p>
             </div>
           )}
