@@ -54,6 +54,7 @@ export function useSettings() {
     const resetSettings = async () => {
         if (loading) return;
         await saveToStorage(SETTINGS_DEFAULTS);
+        await updateMetadata();
     };
 
     const clearCache = async () => {
