@@ -30,7 +30,8 @@ A browser extension designed to protect users from malicious websites by leverag
 ## Installation
 
 ### Downloading the Extension
-1. Head to the releases page and download the latest version of the extension.
+1. Head to the [releases page](https://github.com/Kax675/sgb-guvenliweb/releases) and download the latest version of the extension (e.g., `sgb-guvenliweb-v1.0.0.zip`).
+   *Note: Releases are automatically generated when a new version tag is pushed.*
 2. Extract the downloaded ZIP file to a location of your choice.
 
 ### Loading into Browser

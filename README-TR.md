@@ -30,7 +30,8 @@ Türkiye Siber Güvenlik Başkanlığı'nın (SGB) resmi API'sini kullanarak kul
 ## Kurulum
 
 ### Uzantıyı İndirme
-1. Sürümler (releases) sayfasına gidin ve uzantının en son sürümünü indirin.
+1. [Sürümler (releases)](https://github.com/Kax675/sgb-guvenliweb/releases) sayfasına gidin ve uzantının en son sürümünü indirin (örneğin: `sgb-guvenliweb-v1.0.0.zip`).
+   *Not: Sürümler, yeni bir sürüm etiketi (tag) yüklendiğinde otomatik olarak oluşturulur.*
 2. İndirilen ZIP dosyasını istediğiniz bir konuma çıkartın.
 
 ### Tarayıcıya Yükleme
