@@ -6,11 +6,11 @@ interface ButtonProps extends JSX.HTMLAttributes<HTMLButtonElement> {
 }
 
 export function Button({ variant = 'primary', children, className = '', ...props }: ButtonProps) {
-    const base = "font-bold text-sm py-2 px-4 rounded-md transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none";
+    const base = "font-semibold text-sm py-2 px-4 rounded-md transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2";
     const variants = {
-        primary: "bg-sky-200 text-sky-1000 hover:bg-sky-300",
-        secondary: "bg-gray-200 text-gray-900 hover:bg-gray-200",
-        danger: "bg-red-50 text-red-600 hover:bg-red-100"
+        primary: "bg-sky-600 text-white hover:bg-sky-700 shadow-sm",
+        secondary: "bg-white text-neutral-700 border border-neutral-300 hover:bg-neutral-50 shadow-sm",
+        danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm"
     };
 
     return (
