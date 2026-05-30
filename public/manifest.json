@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "USOM Güvenli Web (V3 TS)",
+  "name": "SGB Güvenli Web",
   "version": "3.0",
-  "description": "USOM API kullanarak zararlı web sitelerini engeller. (TypeScript + Preact Version)",
+  "description": "Siber Güvenlik Başkanlığı API'ını kullanarak zararlı web sitelerini engeller.",
   "permissions": [
     "webNavigation",
     "storage"
@@ -19,5 +19,11 @@
   "options_page": "src/ui/options/index.html",
   "action": {
     "default_popup": "src/ui/popup/index.html"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   }
 }

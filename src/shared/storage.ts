@@ -1,14 +1,14 @@
-import { UsomSettings, SETTINGS_DEFAULTS, CachedModel } from './types';
+import { SgbSettings, SETTINGS_DEFAULTS, CachedModel } from './types';
 
 const SETTINGS_KEY = 'usom_settings';
 const CACHE_KEY = 'usom_cache';
 
-export async function getSettings(): Promise<UsomSettings> {
+export async function getSettings(): Promise<SgbSettings> {
     const result = await chrome.storage.local.get(SETTINGS_KEY);
     return { ...SETTINGS_DEFAULTS, ...(result[SETTINGS_KEY] || {}) };
 }
 
-export async function saveSettings(settings: UsomSettings): Promise<void> {
+export async function saveSettings(settings: SgbSettings): Promise<void> {
     await chrome.storage.local.set({ [SETTINGS_KEY]: settings });
 }
 

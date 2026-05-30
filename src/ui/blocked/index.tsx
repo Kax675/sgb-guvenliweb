@@ -1,5 +1,6 @@
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
+import { useSettings } from "../useSettings";
 import { Button } from "../components/Button";
 import "../style.css";
 
@@ -10,6 +11,7 @@ function generateCrticalityColor(level: number) {
 }
 
 function Blocked() {
+  const { settings, loading } = useSettings();
   const [params, setParams] = useState<Record<string, string>>({});
   const [showDetails, setShowDetails] = useState(false);
 
@@ -19,6 +21,20 @@ function Blocked() {
 
   const goBack = () =>
     window.history.length > 1 ? window.history.back() : window.close();
+
+  if (loading) return null;
+
+  const desc =
+    settings.metadata.descriptions[params.desc]?.tr_title ||
+    params.desc ||
+    "Zararlı İçerik";
+  const source =
+    settings.metadata.sources[params.source]?.tr_title ||
+    params.source ||
+    "SGB";
+  const longDesc =
+    settings.metadata.descriptions[params.desc]?.tr_desc ||
+    "Bu sayfa zararlı içerik barındırıyor olabilir.";
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-6 font-sans text-neutral-900">
@@ -49,21 +65,21 @@ function Blocked() {
         <div className="p-8">
           <p className="text-neutral-600 mb-8 text-sm leading-relaxed text-center">
             Bu web sitesi{" "}
-            <strong className="text-red-600 font-bold">USOM</strong> tarafından
+            <strong className="text-red-700 font-bold">SGB</strong> tarafından
             güvenlik tehdidi olarak raporlandığı için erişiminiz durduruldu.
           </p>
 
           <div className="mb-8 space-y-5">
             <div>
-              <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block mb-2">
+              <span className="text-xs font-bold text-neutral-500 block mb-3">
                 Tehdit Seviyesi
               </span>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-2">
                 <div className="flex gap-1">
                   {[...Array(10)].map((_, i) => (
                     <div
                       key={i}
-                      className={`h-2 w-4 rounded-sm ${i < parseInt(params.level || "0") ? generateCrticalityColor(parseInt(params.level || "0")) : "bg-neutral-100"}`}
+                      className={`h-2 w-5 rounded-sm ${i < parseInt(params.level || "0") ? generateCrticalityColor(parseInt(params.level || "0")) : "bg-neutral-100"}`}
                     />
                   ))}
                 </div>
@@ -73,8 +89,8 @@ function Blocked() {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-neutral-100">
-              <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block mb-1">
+            <div className="pt-4 border-t border-neutral-200">
+              <span className="text-xs font-bold text-neutral-500 block mb-1">
                 Hedef Adres
               </span>
               <span className="text-sm font-semibold text-neutral-800 break-all bg-neutral-50 px-2 py-1 rounded">
@@ -96,19 +112,18 @@ function Blocked() {
             <div className="mt-6 p-4 bg-neutral-50 rounded-xl text-xs text-neutral-600 space-y-3 border border-neutral-100 animate-in fade-in slide-in-from-top-2">
               <div className="flex justify-between">
                 <span className="font-semibold">Tehdit Türü:</span>
-                <span>{params.desc || "Zararlı İçerik"}</span>
+                <span>{desc}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-semibold">Bildirim Kaynağı:</span>
-                <span>{params.source || "USOM"}</span>
+                <span>{source}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-semibold">Tespit Tarihi:</span>
                 <span>{params.date || "Belirtilmemiş"}</span>
               </div>
-              <p className="pt-3 border-t border-neutral-200 text-neutral-500 leading-relaxed italic">
-                Bu sayfa, kişisel verilerinizi çalmaya yönelik oltalama veya
-                kötü amaçlı yazılım barındırıyor olabilir.
+              <p className="pt-3 border-t border-neutral-200 text-neutral-500 leading-relaxed">
+                {longDesc}
               </p>
             </div>
           )}

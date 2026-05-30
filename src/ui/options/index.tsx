@@ -54,6 +54,23 @@ const Icons = {
       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
     </svg>
   ),
+  Database: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+    </svg>
+  ),
   Zap: () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -111,18 +128,33 @@ function Options() {
     updateSettings,
     resetSettings,
     clearCache,
+    updateMetadata,
     cacheCount,
     loading,
   } = useSettings();
   const [activeTab, setActiveTab] = useState("general");
   const [status, setStatus] = useState("");
   const [newDomain, setNewDomain] = useState("");
+  const [updatingMetadata, setUpdatingMetadata] = useState(false);
 
   if (loading && !import.meta.env.DEV) {
     return (
-      <div className="p-12 text-center text-neutral-400">Yükleniyor...</div>
+      <div className="p-12 text-center text-neutral-500">Yükleniyor...</div>
     );
   }
+
+  const handleUpdateMetadata = async () => {
+    setUpdatingMetadata(true);
+    try {
+      await updateMetadata();
+      showStatus("Veri tabanı başarıyla güncellendi");
+    } catch (e) {
+      console.error(e);
+      showStatus("Güncelleme sırasında bir hata oluştu");
+    } finally {
+      setUpdatingMetadata(false);
+    }
+  };
 
   const save = async (field: string, value: any) => {
     await updateSettings({ [field]: value });
@@ -167,16 +199,17 @@ function Options() {
   const tabs = [
     { id: "general", label: "Genel", icon: Icons.Settings },
     { id: "whitelist", label: "İstisnalar", icon: Icons.Globe },
+    { id: "database", label: "Veri Tabanı", icon: Icons.Database },
     { id: "performance", label: "Performans", icon: Icons.Zap },
   ];
 
   return (
     <div className="max-w-2xl mx-auto py-12 px-6 font-sans text-neutral-900">
-      <header className="flex items-center mb-8">
-        
+      <header className="flex items-center gap-4 mb-10">
+        <img src="/SGB.svg" className="w-12 h-12 object-contain" alt="Logo" />
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            Ayarlar
+          <h1 className="text-xl font-bold tracking-tight">
+            SGB Güvenli Web Ayarları
           </h1>
           
         </div>
@@ -206,7 +239,7 @@ function Options() {
               <Input
                 type="checkbox"
                 label="Aktif Koruma"
-                description="Zararlı bağlantıları USOM veritabanı ile gerçek zamanlı olarak kontrol edin ve engelleyin."
+                description="Zararlı bağlantıları SGB veritabanı ile gerçek zamanlı olarak kontrol edin ve engelleyin."
                 checked={settings.protectionEnabled}
                 onChange={(e) =>
                   save(
@@ -244,7 +277,7 @@ function Options() {
                     )
                   }
                 />
-                <div className="flex justify-between text-xs text-neutral-400 mt-2">
+                <div className="flex justify-between text-xs text-neutral-500 mt-2">
                   <span>Düşük Hassasiyet</span>
                   <span>Yüksek Hassasiyet</span>
                 </div>
@@ -281,7 +314,7 @@ function Options() {
 
               <div className="space-y-2">
                 {settings.excludedDomains.length === 0 ? (
-                  <div className="text-center py-8 text-neutral-400 text-sm border border-dashed border-neutral-200 rounded-lg">
+                  <div className="text-center py-8 text-neutral-500 text-sm border border-dashed border-neutral-200 rounded-lg">
                     Henüz bir istisna eklenmemiş.
                   </div>
                 ) : (
@@ -295,7 +328,7 @@ function Options() {
                       </span>
                       <button
                         onClick={() => removeDomain(domain)}
-                        className="p-1 text-neutral-400 hover:text-red-500 transition-all"
+                        className="p-1 text-neutral-500 hover:text-red-500 transition-all"
                         title="Sil"
                       >
                         <Icons.Trash />
@@ -303,6 +336,68 @@ function Options() {
                     </div>
                   ))
                 )}
+              </div>
+            </section>
+          </div>
+        )}
+
+        {activeTab === "database" && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <section className="bg-white border border-neutral-200 rounded-xl p-6 shadow-sm">
+              <h3 className="font-semibold text-base mb-1">SGB Veri Tabanı</h3>
+              <p className="text-sm text-neutral-500 mb-6">
+                Tehdit tanımlamalarını ve kaynak bilgilerini en güncel
+                halleriyle senkronize edin.
+              </p>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-neutral-500">Bildirim Kaynakları</span>
+                  <span className="font-bold text-sky-600">
+                    {Object.keys(settings.metadata.sources).length} Kayıt
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-neutral-500">Tehdit Tanımları</span>
+                  <span className="font-bold text-sky-600">
+                    {Object.keys(settings.metadata.descriptions).length} Kayıt
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-neutral-500">Bağlantı Türleri</span>
+                  <span className="font-bold text-sky-600">
+                    {Object.keys(settings.metadata.connectionTypes).length}{" "}
+                    Kayıt
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-neutral-100 flex items-center justify-between">
+                <div>
+                  <span className="block text-xs text-neutral-500 mb-0.5">
+                    Son Güncelleme
+                  </span>
+                  <span className="text-sm font-semibold text-neutral-700">
+                    {settings.metadata.lastUpdated
+                      ? new Date(settings.metadata.lastUpdated).toLocaleString(
+                          "tr-TR",
+                        )
+                      : "Henüz Güncellenmedi"}
+                  </span>
+                </div>
+                <Button
+                  onClick={handleUpdateMetadata}
+                  disabled={updatingMetadata}
+                >
+                  {updatingMetadata ? (
+                    <>
+                      <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Güncelleniyor...
+                    </>
+                  ) : (
+                    "Şimdi Güncelle"
+                  )}
+                </Button>
               </div>
             </section>
           </div>
@@ -375,7 +470,7 @@ function Options() {
         <Button variant="secondary" onClick={handleReset}>
           Tüm Ayarları Sıfırla
         </Button>
-        <div className="text-xs font-semibold text-neutral-400">
+        <div className="text-xs font-semibold text-neutral-500">
           Versiyon 1.0.0
         </div>
       </footer>

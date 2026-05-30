@@ -1,12 +1,52 @@
-import { UsomApiResponse, UsomModel, CachedModel, UsomSettings, SETTINGS_DEFAULTS } from '../shared/types';
-import { getSettings, getCache, saveCache } from '../shared/storage';
+import { SgbApiResponse, SgbModel, CachedModel, SgbSettings, SETTINGS_DEFAULTS } from '../shared/types';
+import { getSettings, saveSettings, getCache, saveCache } from '../shared/storage';
 
-const USOM_API_URL = "https://siberguvenlik.gov.tr/api/address/index";
+const SGB_API_URL = "https://siberguvenlik.gov.tr/api/address/index";
 
-let currentSettings: UsomSettings = { ...SETTINGS_DEFAULTS };
-const localCache = new Map<string, CachedModel>();
+async function fetchMetadata() {
+    const urls = {
+        sources: "https://siberguvenlik.gov.tr/api/address-source/index?pageSize=1000",
+        descriptions: "https://siberguvenlik.gov.tr/api/address-description/index?pageSize=1000",
+        connectionTypes: "https://siberguvenlik.gov.tr/api/address-connection-type/index?pageSize=1000"
+    };
+
+    const fetchSingle = async (url: string) => {
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            const map: Record<string, any> = {};
+            data.models.forEach((m: any) => { map[m.id] = m; });
+            return map;
+        } catch (e) {
+            console.error("[SGB] Metadata Fetch Error:", e);
+            return null;
+        }
+    };
+
+    const [sources, descriptions, connectionTypes] = await Promise.all([
+        fetchSingle(urls.sources),
+        fetchSingle(urls.descriptions),
+        fetchSingle(urls.connectionTypes)
+    ]);
+
+    if (sources && descriptions && connectionTypes) {
+        const current = await getSettings();
+        await saveSettings({
+            ...current,
+            metadata: {
+                sources,
+                descriptions,
+                connectionTypes,
+                lastUpdated: Date.now()
+            }
+        });
+    }
+}
 
 // Initialize
+let currentSettings: SgbSettings = { ...SETTINGS_DEFAULTS };
+const localCache = new Map<string, CachedModel>();
+
 (async () => {
     currentSettings = await getSettings();
     const diskCache = await getCache();
@@ -14,6 +54,10 @@ const localCache = new Map<string, CachedModel>();
         localCache.set(domain, data);
     });
 })();
+
+chrome.runtime.onInstalled.addListener(() => {
+    fetchMetadata();
+});
 
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "local" && changes['usom_settings']) {
@@ -32,22 +76,22 @@ async function persistCache() {
     await saveCache(Object.fromEntries(localCache));
 }
 
-async function checkDomain(domain: string): Promise<UsomModel | null> {
+async function checkDomain(domain: string): Promise<SgbModel | null> {
     const cached = localCache.get(domain);
     if (cached && (Date.now() - cached.timestamp < currentSettings.cacheDuration * 3600000)) {
         return cached.model;
     }
 
     try {
-        const response = await fetch(`${USOM_API_URL}?q=${domain}&type=domain`);
-        const data: UsomApiResponse = await response.json();
+        const response = await fetch(`${SGB_API_URL}?q=${domain}&type=domain`);
+        const data: SgbApiResponse = await response.json();
         const model = data.models?.[0] || null;
 
         localCache.set(domain, { model, timestamp: Date.now() });
         await persistCache();
         return model;
     } catch (error) {
-        console.error("[USOM] API Error:", error);
+        console.error("[SGB] API Error:", error);
         return null;
     }
 }
@@ -77,6 +121,6 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
             url: chrome.runtime.getURL(`src/ui/blocked/index.html?${params.toString()}`)
         });
     } catch (e) {
-        console.error("[USOM] Navigation Error:", e);
+        console.error("[SGB] Navigation Error:", e);
     }
 });

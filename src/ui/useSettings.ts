@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'preact/hooks';
 import { getSettings, saveSettings as saveToStorage, getCacheCount, clearCache as clearStorageCache } from '../shared/storage';
-import { UsomSettings, SETTINGS_DEFAULTS } from '../shared/types';
+import { SgbSettings, SETTINGS_DEFAULTS } from '../shared/types';
 
 export function useSettings() {
-    const [settings, setSettings] = useState<UsomSettings>(SETTINGS_DEFAULTS);
+    const [settings, setSettings] = useState<SgbSettings>(SETTINGS_DEFAULTS);
     const [loading, setLoading] = useState(true);
     const [cacheCount, setCacheCount] = useState(0);
 
@@ -19,7 +19,7 @@ export function useSettings() {
                     setLoading(false);
                 }
             } catch (e) {
-                console.error("[USOM] Load Error:", e);
+                console.error("[SGB] Load Error:", e);
             }
         };
 
@@ -41,7 +41,7 @@ export function useSettings() {
         };
     }, []);
 
-    const updateSettings = async (newSettings: Partial<UsomSettings>) => {
+    const updateSettings = async (newSettings: Partial<SgbSettings>) => {
         if (loading) return;
 
         // Atomic update: get current from storage, merge, and save
@@ -61,5 +61,38 @@ export function useSettings() {
         setCacheCount(0);
     };
 
-    return { settings, updateSettings, resetSettings, clearCache, cacheCount, loading };
+    const updateMetadata = async () => {
+        const urls = {
+            sources: "https://siberguvenlik.gov.tr/api/address-source/index?pageSize=1000",
+            descriptions: "https://siberguvenlik.gov.tr/api/address-description/index?pageSize=1000",
+            connectionTypes: "https://siberguvenlik.gov.tr/api/address-connection-type/index?pageSize=1000"
+        };
+
+        const fetchMetadata = async (url: string) => {
+            const res = await fetch(url);
+            const data = await res.json();
+            const map: Record<string, any> = {};
+            data.models.forEach((m: any) => {
+                map[m.id] = m;
+            });
+            return map;
+        };
+
+        const [sources, descriptions, connectionTypes] = await Promise.all([
+            fetchMetadata(urls.sources),
+            fetchMetadata(urls.descriptions),
+            fetchMetadata(urls.connectionTypes)
+        ]);
+
+        await updateSettings({
+            metadata: {
+                sources,
+                descriptions,
+                connectionTypes,
+                lastUpdated: Date.now()
+            }
+        });
+    };
+
+    return { settings, updateSettings, resetSettings, clearCache, updateMetadata, cacheCount, loading };
 }
