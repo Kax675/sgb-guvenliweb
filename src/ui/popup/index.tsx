@@ -12,7 +12,7 @@ function Popup() {
   };
   const openOptions = () => chrome.runtime.openOptionsPage();
 
-  if (loading) {
+  if (loading && !import.meta.env.DEV) {
     return (
       <div className="w-[320px] p-12 flex items-center justify-center bg-white">
         <div className="w-6 h-6 border-2 border-sky-600 border-t-transparent rounded-full animate-spin" />
@@ -60,7 +60,7 @@ function Popup() {
           }
           checked={settings.protectionEnabled}
           onChange={toggle}
-          disabled={loading}
+          disabled={loading && !import.meta.env.DEV}
         />
       </div>
 

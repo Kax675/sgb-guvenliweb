@@ -42,7 +42,7 @@ export function useSettings() {
     }, []);
 
     const updateSettings = async (newSettings: Partial<SgbSettings>) => {
-        if (loading) return;
+        if (loading && !import.meta.env.DEV) return;
 
         // Atomic update: get current from storage, merge, and save
         // The listener will automatically update the local 'settings' state
@@ -52,7 +52,7 @@ export function useSettings() {
     };
 
     const resetSettings = async () => {
-        if (loading) return;
+        if (loading && !import.meta.env.DEV) return;
         await saveToStorage(SETTINGS_DEFAULTS);
         await updateMetadata();
     };

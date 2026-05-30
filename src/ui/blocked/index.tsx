@@ -22,7 +22,7 @@ function Blocked() {
   const goBack = () =>
     window.history.length > 1 ? window.history.back() : window.close();
 
-  if (loading) return null;
+  if (loading && !import.meta.env.DEV) return null;
 
   const desc =
     settings.metadata.descriptions[params.desc]?.tr_title ||
